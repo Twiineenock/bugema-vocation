@@ -35,7 +35,7 @@ if (year) year.textContent = new Date().getFullYear();
   let timerId = null;
 
   function update() {
-    const offset = -index * slider.clientWidth;
+    const offset = -Math.round(index * slider.clientWidth);
     slidesWrap.style.transform = `translateX(${offset}px)`;
     dotsWrap.querySelectorAll('button').forEach((b, i) => b.setAttribute('aria-current', String(i === index)));
   }
@@ -65,6 +65,7 @@ if (year) year.textContent = new Date().getFullYear();
 
   // Resize handling
   window.addEventListener('resize', update);
+  window.addEventListener('orientationchange', () => setTimeout(update, 50));
 
   // Touch swipe
   let startX = 0;
