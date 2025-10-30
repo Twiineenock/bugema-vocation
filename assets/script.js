@@ -7,6 +7,13 @@ if (toggle && nav) {
     const open = nav.classList.toggle('is-open');
     toggle.setAttribute('aria-expanded', String(open));
   });
+  // Close mobile menu on link click
+  nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
+    if (nav.classList.contains('is-open')) {
+      nav.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  }));
 }
 
 // Year in footer
@@ -121,3 +128,24 @@ if (heroOverlay) {
 }
 
 
+// Lightbox for images (gallery and slider)
+(function lightboxInit() {
+  const nodes = document.querySelectorAll('.gallery img, .slide img, .leader img');
+  if (!nodes.length) return;
+  const layer = document.createElement('div');
+  layer.className = 'lightbox';
+  layer.innerHTML = '<button class="close-btn" aria-label="Close">×</button><div class="content"><img alt="" /><div class="caption"></div></div>';
+  document.body.appendChild(layer);
+  const img = layer.querySelector('img');
+  const caption = layer.querySelector('.caption');
+  function close() { layer.classList.remove('is-open'); }
+  layer.addEventListener('click', (e) => { if (e.target === layer || e.target.classList.contains('close-btn')) close(); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  nodes.forEach((n) => n.addEventListener('click', () => {
+    img.src = n.src;
+    const figureCaption = n.closest('figure')?.querySelector('figcaption')?.textContent || '';
+    const leaderTitle = n.closest('.leader')?.querySelector('h3')?.textContent || '';
+    caption.textContent = figureCaption || leaderTitle;
+    layer.classList.add('is-open');
+  }));
+})();
